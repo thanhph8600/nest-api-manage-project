@@ -41,6 +41,10 @@ export class UsersController {
   findOne(@Param('id') id: string) {
     return this.usersService.findOne(+id);
   }
+  @Get('team/:projectId')
+  getAccountsByProjectId(@Param('projectId') projectId: number) {
+    return this.usersService.findByIdProduct(projectId);
+  }
 
   @Patch(':id')
   update(
@@ -49,6 +53,14 @@ export class UsersController {
     @Req() req: Request,
   ) {
     return this.usersService.update(+id, updateUserDto, req);
+  }
+
+  @Patch('status/:id')
+  updateStatus(
+    @Param('id') id: string,
+    @Body() updateUserDto: UpdateAccountDto,
+  ) {
+    return this.usersService.updateStatus(+id, updateUserDto);
   }
 
   @Delete(':id')

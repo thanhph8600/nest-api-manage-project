@@ -55,6 +55,45 @@ export class AccountService {
     }
   }
 
+  async findByIdProduct(id_product: number) {
+    try {
+      const result = await this.accountRepository.query(
+        `
+        SELECT accounts.id, accounts.name, accounts.role, accounts.email, accounts.area, COUNT(task.name) AS sumTask
+        FROM accounts
+        LEFT JOIN team ON accounts.id = team.id_account
+        LEFT JOIN projects ON team.id_project = projects.id
+        LEFT JOIN task ON task.id_account = accounts.id
+        WHERE projects.id = ?
+        GROUP BY accounts.id
+      `,
+        [id_product],
+      );
+      console.log(result);
+      return result;
+    } catch (error) {
+      console.log(error);
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  async updateStatus(id: number, updateUserDto: UpdateAccountDto) {
+    try {
+      const account = await this.accountRepository.findOneBy({ id });
+      if (!account) {
+        throw new NotFoundException('User not found');
+      } else {
+        const account = await this.accountRepository.update(
+          { id },
+          updateUserDto,
+        );
+        return account;
+      }
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
   async update(id: number, updateUserDto: UpdateAccountDto, req: any) {
     try {
       if (!req.headers.authorization) {

@@ -6,6 +6,7 @@ import {
   PrimaryGeneratedColumn,
   ManyToOne,
   JoinColumn,
+  BeforeInsert,
 } from 'typeorm';
 
 @Entity({ name: 'task' })
@@ -23,6 +24,15 @@ export class Task {
   name: string;
 
   @Column()
+  description: string;
+
+  @Column()
+  note: string;
+
+  @Column()
+  status: string;
+
+  @Column({ default: () => 'CURRENT_TIMESTAMP' })
   startDate: Date;
 
   @Column()
@@ -31,8 +41,12 @@ export class Task {
   @Column()
   finishDate: Date;
 
-  @Column()
-  status: string;
+  @BeforeInsert()
+  setStartDateDefaultValue() {
+    if (!this.startDate) {
+      this.startDate = new Date(); // Thiết lập giá trị mặc định là ngày hiện tại trước khi thêm mới
+    }
+  }
 
   @ManyToOne(() => Account, (account) => account.task)
   @JoinColumn({ name: 'id_account' })

@@ -25,9 +25,19 @@ export class TeamController {
     return this.teamService.findAll();
   }
 
+  @Get('project/:id')
+  findByIdProject(@Param('id') id: string) {
+    return this.teamService.findByIdProject(+id);
+  }
+
+  @Get('account/:id')
+  findByIdAccount(@Param('id') id: string) {
+    return this.teamService.findByIdAccount(+id);
+  }
+
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.teamService.findOne(+id);
+  findOne(@Param('id') id_project: string) {
+    return this.teamService.findOne(+id_project);
   }
 
   @Patch(':id')

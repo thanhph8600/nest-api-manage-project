@@ -44,6 +44,9 @@ export class Account {
   @Column({ default: 'activate' })
   status: string;
 
+  @Column({ default: 'Front end' })
+  position: string;
+
   @OneToMany(() => Team, (team) => team.account)
   teams: Team[];
 

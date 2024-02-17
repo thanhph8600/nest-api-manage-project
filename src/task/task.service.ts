@@ -25,8 +25,12 @@ export class TaskService {
   }
 
   async findAll() {
-    const tasks = await this.taskRepository.find();
-    return tasks;
+    try {
+      const tasks = await this.taskRepository.find();
+      return tasks;
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
   }
 
   async findOne(id: number) {
