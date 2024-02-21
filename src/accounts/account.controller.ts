@@ -7,13 +7,13 @@ import {
   Param,
   Delete,
   Req,
+  UploadedFile,
 } from '@nestjs/common';
 import { AccountService } from './account.service';
 import { CreateAccountDto } from './dto/create-account.dto';
 import { UpdateAccountDto } from './dto/update-account.dto';
 import { Request } from 'express';
 import { EmailService } from 'src/config/email/email.service';
-import { Public } from 'src/auth/auth.guard';
 
 @Controller('users')
 export class UsersController {
@@ -36,7 +36,10 @@ export class UsersController {
   findAll() {
     return this.usersService.findAll();
   }
-
+  @Get('customer')
+  findCustomers() {
+    return this.usersService.findAllCustomer();
+  }
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.usersService.findOne(+id);
@@ -44,6 +47,10 @@ export class UsersController {
   @Get('team/:projectId')
   getAccountsByProjectId(@Param('projectId') projectId: number) {
     return this.usersService.findByIdProduct(projectId);
+  }
+  @Post('top5')
+  getTop5Staff() {
+    return this.usersService.findTop5UserFormTask();
   }
 
   @Patch(':id')
@@ -68,18 +75,9 @@ export class UsersController {
     return this.usersService.remove(+id);
   }
 
-  @Public()
-  @Get('send')
-  // async sendEmail(): Promise<string> {
-  //   await this.emailService.sendEmail(
-  //     'pht456654@gmail.com',
-  //     'Test Subject',
-  //     'Hello, this is a test email!',
-  //   );
-  //   return 'Email sent!';
-  // }
-  test() {
-    console.log(123);
-    return 123;
+  @Patch('upload/:id')
+  uploadFile(@Param('id') id: string, @UploadedFile() file) {
+    console.log(file);
+    // return this.usersService.uploadFile(+id, file);
   }
 }

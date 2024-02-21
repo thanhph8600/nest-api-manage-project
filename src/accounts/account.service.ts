@@ -32,7 +32,12 @@ export class AccountService {
 
   async findAll() {
     const accounts = await this.accountRepository.find();
-    return accounts;
+    return accounts.filter((account) => account.status != 'customer');
+  }
+
+  async findAllCustomer() {
+    const accounts = await this.accountRepository.find();
+    return accounts.filter((account) => account.status == 'customer');
   }
 
   async findOne(id: number) {
@@ -69,10 +74,29 @@ export class AccountService {
       `,
         [id_product],
       );
-      console.log(result);
       return result;
     } catch (error) {
       console.log(error);
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  async findTop5UserFormTask() {
+    try {
+      const result = await this.accountRepository.query(
+        `
+        SELECT accounts.id, accounts.name, accounts.role, accounts.email, accounts.thumb, COUNT(task.name) AS sumTask
+        FROM accounts
+        LEFT JOIN task ON task.id_account = accounts.id
+        WHERE task.finishDate >= DATE_SUB(CURDATE(), INTERVAL 1 WEEK)
+        AND task.status = 'finished'
+        GROUP BY accounts.id
+        ORDER BY sumTask DESC
+        LIMIT 5;
+      `,
+      );
+      return result;
+    } catch (error) {
       throw new InternalServerErrorException(error);
     }
   }
@@ -110,9 +134,6 @@ export class AccountService {
           updateUserDto.password = await this.authService.hashPassword(
             updateUserDto.password,
           );
-        }
-        if (typeof updateUserDto.thumb !== 'string') {
-          console.log(updateUserDto.thumb);
         }
         const user = await this.accountRepository.update({ id }, updateUserDto);
         return user;

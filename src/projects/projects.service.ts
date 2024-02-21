@@ -38,6 +38,18 @@ export class ProjectsService {
     return project;
   }
 
+  async getRevenue(year: number) {
+    const revenue = await this.projectRepository.query(
+      `SELECT MONTH(updatedAt) AS month, SUM(expense) AS total_revenue 
+      FROM projects 
+      WHERE YEAR(updatedAt) = 2024 AND projects.status = 'done'
+      GROUP BY MONTH(updatedAt) 
+      ORDER BY MONTH(updatedAt) ;`,
+      [year],
+    );
+    return revenue;
+  }
+
   async update(id: number, updateProjectDto: UpdateProjectDto) {
     const project = await this.projectRepository.findOneBy({ id });
     if (!project) {

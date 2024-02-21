@@ -30,6 +30,10 @@ export class ProjectsController {
     return this.projectsService.findOne(+id);
   }
 
+  @Get('revenue/:year')
+  getRevenue(@Param('year') year: string) {
+    return this.projectsService.getRevenue(+year);
+  }
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateProjectDto: UpdateProjectDto) {
     return this.projectsService.update(+id, updateProjectDto);

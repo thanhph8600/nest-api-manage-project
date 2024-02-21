@@ -3,4 +3,5 @@ export class CreateTeamDto {
   id_project: number;
   id_account: number;
   role: string;
+  status: string;
 }

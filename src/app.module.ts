@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { DataSource } from 'typeorm';
@@ -16,6 +16,9 @@ import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from './auth/constants';
 import { EmailService } from './config/email/email.service';
 import { EmailModule } from './config/email/email.module';
+import { MulterModule } from '@nestjs/platform-express';
+import { MulterMiddleware } from './middleware/multer/multer.middleware';
+import { UploadController } from './upload/upload.controller';
 @Module({
   imports: [
     TypeOrmModule.forRoot({
@@ -39,10 +42,20 @@ import { EmailModule } from './config/email/email.module';
     TeamModule,
     TaskModule,
     EmailModule,
+    MulterModule.register(
+      MulterMiddleware.configure({
+        dest: './uploads', // Thư mục lưu trữ file
+      }),
+    ),
   ],
-  controllers: [AppController],
+  controllers: [AppController, UploadController],
   providers: [AppService, EmailService],
 })
 export class AppModule {
   constructor(private dataSource: DataSource) {}
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(MulterMiddleware)
+      .forRoutes({ path: 'upload/:id', method: RequestMethod.POST }); // Đặt đường dẫn và phương thức HTTP mà bạn muốn xử lý file ảnh
+  }
 }

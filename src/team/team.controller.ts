@@ -45,6 +45,14 @@ export class TeamController {
     return this.teamService.update(+id, updateTeamDto);
   }
 
+  @Patch('job-transfer/:id')
+  updateJobTransfer(
+    @Param('id') id: string,
+    @Body() updateTeamDto: UpdateTeamDto,
+  ) {
+    return this.teamService.updateJobTransfer(+id, updateTeamDto);
+  }
+
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.teamService.remove(+id);

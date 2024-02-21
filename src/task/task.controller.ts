@@ -35,6 +35,10 @@ export class TaskController {
     return this.taskService.update(+id, updateTaskDto);
   }
 
+  @Patch('project/:id')
+  jobTransfer(@Param('id') id: string, @Body() updateTaskDto: UpdateTaskDto) {
+    return this.taskService.jobTransfer(+id, updateTaskDto);
+  }
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.taskService.remove(+id);

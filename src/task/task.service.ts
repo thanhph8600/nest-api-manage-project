@@ -49,6 +49,31 @@ export class TaskService {
     return this.taskRepository.update({ id }, updateTaskDto);
   }
 
+  async jobTransfer(id: number, updateTaskDto: UpdateTaskDto) {
+    try {
+      const result = await this.taskRepository.query(
+        `UPDATE task SET id_account= ? WHERE id_project = ? AND id_account = ? AND status != 'finished'`,
+        [id, updateTaskDto.id_project, updateTaskDto.id_account],
+      );
+      return result;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async findByProjectIdAndAccointId(projectId: number, accountId: number) {
+    try {
+      const result = await this.taskRepository.query(
+        `SELECT * FROM task WHERE id_project = ? AND id_account = ?`,
+        [projectId, accountId],
+      );
+      return result;
+    } catch (error) {
+      return false;
+      console.log(error);
+    }
+  }
+
   async remove(id: number) {
     const task = await this.taskRepository.findOneBy({ id });
     if (!task) {

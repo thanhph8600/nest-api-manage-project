@@ -24,6 +24,9 @@ export class Team {
   @Column()
   role: string;
 
+  @Column()
+  status: string;
+
   @ManyToOne(() => Account, (account) => account.teams)
   @JoinColumn({ name: 'id_account' })
   account: Account;
