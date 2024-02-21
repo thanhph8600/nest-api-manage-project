@@ -41,6 +41,9 @@ export class Project {
   @CreateDateColumn({ default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
 
+  @Column()
+  id_customer: number;
+
   @UpdateDateColumn({
     default: () => 'CURRENT_TIMESTAMP',
     onUpdate: 'CURRENT_TIMESTAMP',

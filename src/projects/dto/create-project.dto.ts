@@ -10,4 +10,5 @@ export class CreateProjectDto {
   status: string;
   createdAt: Date;
   updatedAt: Date;
+  id_customer: number;
 }
